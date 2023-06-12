@@ -14,7 +14,3 @@ set_io --warn-no-port lcol3 	A6
 set_io --warn-no-port lcol4 	C5
 set_io --warn-no-port key1  	C11
 set_io --warn-no-port clk12MHz	P7
-set_io --warn-no-port sdo       A3
-set_io --warn-no-port sdi       A2
-set_io --warn-no-port csb       A1
-set_io --warn-no-port sck       C3
