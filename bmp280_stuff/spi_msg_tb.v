@@ -3,204 +3,29 @@
 `timescale 1 ns/10 ps
 module spi_msg_tb;
 
-reg sdi, go, sck;
-wire [15:0] tmp;
-wire sdo, csb, internal_sck;
+reg sdi, go, clk12MHz;
+wire [15:0] recv_message;
+wire sdo, csb, sck;
+wire [3:0] debug_states;
 
 localparam period = 20;
 
+integer i;
 
-
-spi_msg spi (.sck(internal_sck), .clk12MHz(sck), .sdi(sdi), .sdo(sdo), .csb(csb), .recv_message(tmp), .go(go));
+spi_msg spi ( .clk12MHz(clk12MHz), .sdi(sdi), .sdo(sdo), .csb(csb), .recv_message(recv_message), .go(go), .sck(sck), .debug_states(debug_states));
 
 initial begin
-
-sck = 1'b0;
+  for (i=0; i<200; i=i+1)
+        begin
+  clk12MHz <= 0;
   #period;
-$display("Clock: %b, csb: %b, sdo: %b, internal_sck %b", sck, csb, sdo, internal_sck);
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b, internal_sck %b", sck, csb, sdo, internal_sck);
-sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b, internal_sck %b", sck, csb, sdo, internal_sck);
-$display("go signal ab hetzt");
-go = 1'b1;
-sck = 1'b0;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b, internal_sck %b", sck, csb, sdo, internal_sck);
-  sck = 1'b1;
-  #period;
-  
-$display("Clock: %b, csb: %b, sdo: %b, internal_sck %b", sck, csb, sdo, internal_sck);
-sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b, internal_sck %b", sck, csb, sdo, internal_sck);
-
-    sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b, internal_sck %b", sck, csb, sdo, internal_sck);
-
-
-    sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-
-
-    sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-
-sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-
-sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-
-sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-
-sck = 1'b0;
-  #period;
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-
-
-// receiving should start here
-//
-//
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 0;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 0;
-  #period;
-  sck = 1'b1;
-  #period;
-
-sck = 1'b0;
-sdi = 0;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
+  clk12MHz <= 1;
   #period;
 
 
-sck = 1'b0;
-sdi = 0;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 0;
-  #period;
-  sck = 1'b1;
-  #period;
+        end
 
-sck = 1'b0;
-sdi = 0;
-  #period;
-  sck = 1'b1;
-  #period;
-sck = 1'b0;
-sdi = 1;
-  #period;
-  sck = 1'b1;
-  #period;
-
-
-$display("recv: %b%b%b%b%b%b%b%b%b%b%b%b%b%b%b%b", tmp[15],tmp[14],tmp[13],tmp[12],tmp[11],tmp[10],tmp[9],tmp[8],tmp[7],tmp[6],tmp[5],tmp[4],tmp[3],tmp[2],tmp[1],tmp[0]);
-
-sck = 1'b0;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);    
-
-sck = 1'b0;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);    
-sck = 1'b0;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);
-  sck = 1'b1;
-  #period;
-$display("Clock: %b, csb: %b, sdo: %b", sck, csb, sdo);    
-
-end
+    end
 
 
 

@@ -4,7 +4,8 @@ module spi_msg(input clk12MHz,
   output reg sck,
   output reg sdo,
   output reg csb,
-  output reg [15:0] recv_message);
+  output reg [15:0] recv_message,
+  output [3:0] debug_states);
 
 
 reg [32:0] sck_counter = 32'h00000000;
@@ -22,10 +23,14 @@ reg [6:0] reg_address = 7'b1010000; //chip id for testing reasons
 
 //assign tmp = recv_message;
 //
+//
+integer csb_counter = 0;
+
+assign debug_states = states;
 
 always @ (posedge clk12MHz) begin
   sck_counter <=  sck_counter + 1;
-  sck <= sck_counter[20];
+  sck <= sck_counter[1];
 /*
       recv_message[15] <= ~states[3];
       recv_message[14] <= ~states[2];
@@ -45,6 +50,7 @@ always @ (posedge clk12MHz) begin
       4'b0000: begin
         csb <= 0;
         states <= 4'b0001;
+        csb_counter <= 0;
       end
       4'b0010: begin
         states <= 4'b0011;
@@ -54,7 +60,6 @@ always @ (posedge clk12MHz) begin
         states <= 4'b0011;
       end
       4'b0101: begin
-
         msg_bit_counter <= 4'h0;
         recv_message[15 - recv_msg_bit_counter] <= sdi;
         if(recv_msg_bit_counter == 15) begin
@@ -67,7 +72,13 @@ always @ (posedge clk12MHz) begin
 
       4'b1000: begin
         csb <= 1;
+        csb_counter <= csb_counter + 1;
+        if (csb_counter == 3) begin
         states <= 4'b0000;
+        end
+        else begin
+          states <= 4'b1011;
+        end
       end
       4'b1001: begin
         states <= 4'b1010;
@@ -107,6 +118,9 @@ always @ (posedge clk12MHz) begin
        states <= 4'b0101;
       end
 
+      4'b1011: begin
+        states <= 4'b1000;
+      end
       
 
     endcase
